@@ -1,27 +1,27 @@
 {
-  "parser": "babel-eslint",
-  "extends": [
+  "parser"  : "babel-eslint",
+  "extends" : [
     "standard",
     "standard-react"
   ],
-  "plugins": [
-    "babel",
-    "react",
-    "promise"
+  "plugins" : [
+    "flow-vars"
   ],
-  "env": {
+  "env"     : {
     "browser" : true
   },
-  "globals": {
+  "globals" : {
+    "Action"       : false,
     "__DEV__"      : false,
-    "__TEST__"     : false,
     "__PROD__"     : false,
-    "__COVERAGE__" : false
+    "__DEBUG__"    : false,
+    "__DEBUG_NEW_WINDOW__" : false,
+    "__BASENAME__" : false
   },
   "rules": {
-    "key-spacing"          : 0,
-    "jsx-quotes"           : [2, "prefer-single"],
-    "max-len"              : [2, 120, 2],
-    "object-curly-spacing" : [2, "always"]
+    "semi" : [2, "never"],
+    "max-len": [2, 120, 2],
+    "flow-vars/define-flow-type": 1,
+    "flow-vars/use-flow-type": 1
   }
 }
