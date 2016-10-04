@@ -12,7 +12,7 @@ const config = {
   // ----------------------------------
   path_base  : path.resolve(__dirname, '..'),
   dir_client : 'src',
-  dir_dist   : 'dist',
+  dir_dist   : 'API/public',
   dir_server : 'server',
   dir_test   : 'tests',
 
@@ -21,6 +21,7 @@ const config = {
   // ----------------------------------
   server_host : 'localhost',
   server_port : process.env.PORT || 3000,
+  api_port : process.env.API_PORT || 8000,
 
   // ----------------------------------
   // Compiler Configuration
