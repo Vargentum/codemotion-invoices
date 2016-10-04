@@ -1,7 +1,7 @@
 {
-  "name": "react-redux-starter-kit",
-  "version": "2.0.0",
-  "description": "Get started with React, Redux, and React-Router!",
+  "name": "codemotion-invoices",
+  "version": "0.0.0-semantically-released",
+  "description": "Simple web-app to proof front-end development skills. Scaffolded with react-redux-starter-kit.",
   "main": "index.js",
   "engines": {
     "node": ">=4.2.0",
@@ -74,9 +74,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davezuko/react-redux-starter-kit.git"
+    "url": "git+https://github.com/Vargentum/codemotion-invoices"
   },
-  "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
+  "author": "Vargentum. Based on David Zukowski react-redux-starter-kit",
   "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.5.1",
