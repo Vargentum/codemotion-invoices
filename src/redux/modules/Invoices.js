@@ -1,9 +1,6 @@
 import createReducer from 'create-reducer-map'
 import update from 'react-addons-update'
-
-
-export const compose = (...fns) => (initValue) => fns.reduce((p,fn) => fn.call(p, p), initValue)
-export const composeRight = (...fns) => (initValue) => fns.reduceRight((p,fn) => fn.call(p, p), initValue)
+import * as u from 'utils'
 
 const API = 'http://localhost:8000/api/'
 
@@ -29,7 +26,7 @@ const [
   LOAD_CUSTOMERS_CYCLE, 
   LOAD_PRODUCTS_CYCLE, 
   LOAD_INVOICES_CYCLE
-] = RESOURCE_TYPES.map(compose(createResourceBasicConstant, getProimseCycleActions))
+] = RESOURCE_TYPES.map(u.compose(createResourceBasicConstant, getProimseCycleActions))
 
 /* -----------------------------
   Action creators

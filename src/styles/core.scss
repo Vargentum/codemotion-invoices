@@ -20,4 +20,10 @@
   *:after {
     box-sizing: inherit;
   }
+
+  .page-container {
+    min-width: 320px;
+    max-width: 960px;
+    margin: auto;
+  }
 }
