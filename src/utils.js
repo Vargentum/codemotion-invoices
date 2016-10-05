@@ -31,3 +31,5 @@ export function makeTogglableStateFor(key, value) {
     [key]: value || !this.state[key] 
   });
 }
+
+export const precisePrice = (number) => _.floor(number, 2) //after zero

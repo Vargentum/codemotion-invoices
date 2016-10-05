@@ -4,28 +4,28 @@ import {Form, FormGroup, FormControl, ControlLabel, Button} from 'react-bootstra
 import {Select} from 'components/common'
 import {getCustomers, getProducts, getInvoices} from 'redux/modules/Invoices'
 import {connect} from 'react-redux'
+import * as u from 'utils'
 
-/* -----------------------------
-  Adder:
 
-  <Adder products={products} onQuantityChange={()}
-
-  Problems:
-  - how to compose product main data with quantity data?
-  - how to send changed Q?
-
-  Way1: merge Q into Products -> problems with syncing data
-  Way2 -> keep Q separated
------------------------------ */
+function InvoiceTotal({data: {products, quantities, discount}}) {
+  const totalPrice = products.reduce((p,n,i) => p + n.price * quantities[i], 0)
+  const discountedValue = totalPrice * discount / 100
+  return <div>
+    <hr />
+    <h2>Total: ${u.precisePrice(totalPrice - discountedValue)}</h2>
+    <h5>You just save ${u.precisePrice(discountedValue)}!</h5>
+    <hr />
+  </div>
+}
 
 
 export const FORM_ID = 'NewInvoice'
 
-export const fields = ['customer', 'products', 'quantities']
+export const fields = ['customer', 'products', 'quantities', 'discount']
 
 export const optionsRenderer = {
   customers: ({id, name}) => ({value: id, label: name}),
-  products: ({id, name, price}) => ({value: id, label: `${name} $${price}`})
+  products: ({id, name, price}) => ({value: id, label: `${name} $${price}`, price})
 }
 
 const validate = (values) => {
@@ -43,7 +43,9 @@ type Props = {
   fields,
   validate,
   initialValues: {
-    quantities: []
+    products: [],
+    quantities: [],
+    discount: 0
   }
 })
 @connect(
@@ -95,6 +97,9 @@ export default class NewInvoice extends React.Component {
       {map(::this.createQuantityInput)}
     </div>
   }
+  createInput = (props) => ({input: {value, onChange}}) => 
+    <FormControl {...props} value={value} onChange={onChange} />
+
   render() {
     const {formData, fields, handleSubmit, getProducts, getCustomers, customers, products } = this.props
 
@@ -102,20 +107,29 @@ export default class NewInvoice extends React.Component {
       onOpen: this.handleResourceLoadRequest(customers, getCustomers),
       isLoading: customers.loading,
       options: this.getOptionsFromResource(customers, optionsRenderer.customers),
-      placeholder: "Select a Customer"
+      placeholder: "Select a Customer",
+      required: true
     })
     const ProductSelect = this.createFieldSelectComponent({
       onOpen: this.handleResourceLoadRequest(products, getProducts),
       isLoading: products.loading,
       options: this.getOptionsFromResource(products, optionsRenderer.products),
       placeholder: "Select some Products",
-      multi: true
+      multi: true,
+      required: true
     })
+    const DiscountInput = this.createInput({
+      type: 'number',
+      placeholder: 'Enter a Discount'
+    })
+    const showInvoiceTotal = !!formData.values.products.length
     return (
       <Form onSubmit={handleSubmit}>
         <Field name="customer" component={CustomerSelect} />
         <Field name="products" component={ProductSelect} />
         <FieldArray name="products" component={::this.createQuantityManager} />
+        <Field name="discount" component={DiscountInput} />
+        {showInvoiceTotal && <InvoiceTotal data={formData.values} />}
         <Button type="submit" bsStyle="primary">Create new Invoice</Button>
       </Form>
     )
