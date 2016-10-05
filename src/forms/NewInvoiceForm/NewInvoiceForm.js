@@ -44,19 +44,22 @@ export default class NewInvoice extends React.Component {
       ? []
       : resource.data.map(optionsRenderer)
   }
+  handleResourceLoadRequest = (resource, loader) => () => {
+    !resource.loaded && loader()
+  }
   render() {
     const { fields, handleSubmit, getProducts, getCustomers, customers, products } = this.props
     return (
       <Form onSubmit={handleSubmit}>
         <Select 
-          onOpen={getCustomers}
+          onOpen={this.handleResourceLoadRequest(customers, getCustomers)}
           isLoading={customers.loading}
           options={NewInvoice.getOptionsFromResource(customers, optionsRenderer.customers)}
           placeholder="Select a Customer"
           {...fields.customer}
           />
         <Select 
-          onOpen={getProducts}
+          onOpen={this.handleResourceLoadRequest(products, getProducts)}
           isLoading={products.loading}
           options={NewInvoice.getOptionsFromResource(products, optionsRenderer.products)}
           placeholder="Select some Products"

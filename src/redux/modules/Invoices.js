@@ -69,7 +69,7 @@ const initialState = {
 const createResourceReducersCycle = (resourceType, actionsCycle) => ({
   [actionsCycle.pending]: (state) => ({
     ...state,
-    [resourceType]: update(state[resourceType], {$set: {loading: true}})
+    [resourceType]: update(state[resourceType], {$merge: {loading: true, loaded: false}})
   }),
   [actionsCycle.fulfilled]: (state, action) => ({
     ...state,
@@ -82,9 +82,10 @@ const createResourceReducersCycle = (resourceType, actionsCycle) => ({
   [actionsCycle.rejected]: (state, reason) => ({
     ...state,
     [resourceType]: update(state[resourceType], {$merge: {
-                                            loading: false,
-                                            error: reason
-                                          }})
+                                                  loading: false,
+                                                  loaded: false,
+                                                  error: reason
+                                                }})
   })
 })
 
