@@ -1,6 +1,6 @@
 import React from 'react'
-import { reduxForm } from 'redux-form'
-import {Form, FormGroup, FormControl} from 'react-bootstrap'
+import { reduxForm, Field } from 'redux-form'
+import {Form, FormGroup, FormControl, Button} from 'react-bootstrap'
 import {Select} from 'components/common'
 import {getCustomers, getProducts, getInvoices} from 'redux/modules/Invoices'
 import {connect} from 'react-redux'
@@ -39,7 +39,7 @@ export default class NewInvoice extends React.Component {
   defaultProps = {
     fields: {},
   }
-  static getOptionsFromResource(resource, optionsRenderer) {
+  getOptionsFromResource(resource, optionsRenderer) {
     return resource.loading 
       ? []
       : resource.data.map(optionsRenderer)
@@ -47,30 +47,42 @@ export default class NewInvoice extends React.Component {
   handleResourceLoadRequest = (resource, loader) => () => {
     !resource.loaded && loader()
   }
+  createFieldSelectComponent = (props) => ({input: {value, onChange}}) =>
+    <Select
+      {...props}
+      value={value}
+      onChange={onChange} />
+
+  createFieldInputComponent = (props) => ({input}) =>
+    <FormControl {...props} {...input} />
+
   render() {
     const { fields, handleSubmit, getProducts, getCustomers, customers, products } = this.props
+
+    const CustomerSelect = this.createFieldSelectComponent({
+      onOpen: this.handleResourceLoadRequest(customers, getCustomers),
+      isLoading: customers.loading,
+      options: this.getOptionsFromResource(customers, optionsRenderer.customers),
+      placeholder: "Select a Customer"
+    })
+    const ProductSelect = this.createFieldSelectComponent({
+      onOpen: this.handleResourceLoadRequest(products, getProducts),
+      isLoading: products.loading,
+      options: this.getOptionsFromResource(products, optionsRenderer.products),
+      placeholder: "Select some Products",
+      multiple: true
+    })
+    const QuantityInput = this.createFieldInputComponent({
+      type: "number",
+      placeholder: "Select Quantity"
+    })
+
     return (
       <Form onSubmit={handleSubmit}>
-        <Select 
-          onOpen={this.handleResourceLoadRequest(customers, getCustomers)}
-          isLoading={customers.loading}
-          options={NewInvoice.getOptionsFromResource(customers, optionsRenderer.customers)}
-          placeholder="Select a Customer"
-          {...fields.customer}
-          />
-        <Select 
-          onOpen={this.handleResourceLoadRequest(products, getProducts)}
-          isLoading={products.loading}
-          options={NewInvoice.getOptionsFromResource(products, optionsRenderer.products)}
-          placeholder="Select some Products"
-          multiple={true}
-          {...fields.product}
-          />
-        <FormControl 
-          type="number" 
-          placeholder="Select Quantity" 
-          {...fields.quantity} 
-          />
+        <Field name="customer" component={CustomerSelect} />
+        <Field name="product" component={ProductSelect} />
+        <Field name="quantity" component={QuantityInput} />
+        <Button type="submit" bsStyle="primary">Create new Invoice</Button>
       </Form>
     )
   }
