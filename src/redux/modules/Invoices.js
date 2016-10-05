@@ -31,6 +31,9 @@ const [
 /* -----------------------------
   Action creators
 ----------------------------- */
+
+// Decorator that returns thunk
+
 const composeRecourceLoadAC = (type) => () => (dispatch) => {
   checkResourceType(type)
   fetch(API + type, {mode: 'cors'})
@@ -63,24 +66,30 @@ const initialState = {
   'invoices': createResourceState()
 }
 
-export default createReducer(initialState, {
-  [LOAD_INVOICES_CYCLE.pending]: (state) => ({
+const createResourceReducersCycle = (resourceType, actionsCycle) => ({
+  [actionsCycle.pending]: (state) => ({
     ...state,
-    invoices: update(state.invoices, {$set: {loading: true}})
+    [resourceType]: update(state[resourceType], {$set: {loading: true}})
   }),
-  [LOAD_INVOICES_CYCLE.fulfilled]: (state, action) => ({
+  [actionsCycle.fulfilled]: (state, action) => ({
     ...state,
-    invoices: {
+    [resourceType]: {
       loaded: true,
       loading: false,
       data: action
     }
   }),
-  [LOAD_INVOICES_CYCLE.rejected]: (state, reason) => ({
+  [actionsCycle.rejected]: (state, reason) => ({
     ...state,
-    invoices: update(state.invoices, {$merge: {
-                                        loading: false,
-                                        error: reason
-                                      }})
+    [resourceType]: update(state[resourceType], {$merge: {
+                                            loading: false,
+                                            error: reason
+                                          }})
   })
+})
+
+export default createReducer(initialState, {
+  ...createResourceReducersCycle('invoices', LOAD_INVOICES_CYCLE),
+  ...createResourceReducersCycle('customers', LOAD_CUSTOMERS_CYCLE),
+  ...createResourceReducersCycle('products', LOAD_PRODUCTS_CYCLE)
 })

@@ -6,6 +6,7 @@ import {getCustomers, getProducts, getInvoices} from 'redux/modules/Invoices'
 import InvoicesListUI from 'components/InvoicesList'
 import * as cmn from 'components/common'
 import * as u from 'utils'
+import NewInvoiceForm from 'forms/NewInvoiceForm'
 
 
 type Props = {
@@ -26,16 +27,18 @@ export class InvoicesList extends React.Component {
   hideInvoiceCreateForm() {
     u.makeTogglableStateFor.call(this, 'invoiceCreateFormVisibility', false)
   }
-
+  handleInvoiceCreation(data) {
+    console.log(data, '---------')
+    /*this.props.getInvoices()    */
+  }
   r_invoiceCreateFormModal() {
-    return <cmn.Modal 
-      show={this.state.invoiceCreateFormVisibility} 
+    return <cmn.Modal
+      show={this.state.invoiceCreateFormVisibility}
       onHide={::this.hideInvoiceCreateForm}
       title="Create New Invoice">
         TEST
     </cmn.Modal>
   }
-  
   render() {
     const {invoices: {loading, data}} = this.props
 
@@ -51,10 +54,11 @@ export class InvoicesList extends React.Component {
               There are no invoices. Would you like to add a new one?
             </cmn.EmptyArea>
           }
-          <Button 
-            onClick={::this.showInvoiceCreateForm} 
+          <Button
+            onClick={::this.showInvoiceCreateForm}
             bsStyle="primary">Add new Invoice</Button>
           {this.r_invoiceCreateFormModal()}
+          <NewInvoiceForm onSubmit={::this.handleInvoiceCreation} />
         </div>
       )
     }
