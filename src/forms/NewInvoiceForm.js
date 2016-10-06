@@ -9,12 +9,11 @@ import * as fh from 'forms/formHelpers'
 import style from './NewInvoiceForm.styl'
 
 
-function InvoiceTotal({data: {products, quantities, discount}}) {
-  const totalPrice = products.reduce((p,n,i) => p + n.price * quantities[i], 0)
-  const discountedValue = totalPrice * discount / 100
+function InvoiceTotal({total, discount}) {
+  const discountedValue = total * discount / 100
   return <div>
     <hr />
-    <h2>Total: ${u.precisePrice(totalPrice - discountedValue)}</h2>
+    <h2>Total: ${u.precisePrice(total - discountedValue)}</h2>
     <h5>You just save ${u.precisePrice(discountedValue)}!</h5>
     <hr />
   </div>
@@ -27,7 +26,7 @@ const discountLimit = {
 
 export const FORM_ID = 'NewInvoice'
 
-export const fields = ['customer', 'products', 'quantities', 'discount']
+export const fields = ['customer', 'products', 'quantities', 'discount', 'total']
 
 export const optionsRenderer = {
   customers: ({id, name}) => ({value: id, label: name}),
@@ -145,7 +144,11 @@ export default class NewInvoice extends React.Component {
             <Field name="discount" component={this.DiscountInput} />
           </Row>
           <Row>
-            {showInvoiceTotal && <InvoiceTotal data={formData.values} />}
+            {showInvoiceTotal && 
+              <InvoiceTotal 
+                total={formData.values.total} 
+                discount={formData.values.discount} />
+            }
             <Button type="submit" bsStyle="primary">Create new Invoice</Button>
           </Row>
         </Grid>
