@@ -1,12 +1,12 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component, createElement, PropTypes as PT} from 'react'
 import {ListGroup, ListGroupItem} from 'react-bootstrap'
 import _ from 'lodash'
 
 class ItemsList extends Component {
   static propTypes = {
-    data: PropTypes.array.isRequired,
-    item: PropTypes.element.isRequired,
-    itemProps: PropTypes.object
+    data: PT.array.isRequired,
+    item: PT.oneOfType([PT.element, PT.func]).isRequired,
+    itemProps: PT.object
   }
 
   static defaultProps = {
@@ -14,15 +14,12 @@ class ItemsList extends Component {
     itemProps: {}
   }
 
-  r_item = (Item, props) => <ListGroupItem key={_.uniqueId()} {...this.props.itemProps}>
-    <Item {...props} />
+  r_item = (item, props) => <ListGroupItem key={_.uniqueId()} {...this.props.itemProps}>
+    {createElement(item, props, null)}
   </ListGroupItem>
 
   render() {
-    const {
-      data,
-      item
-    } = this.props
+    const {data, item} = this.props
 
     return (
       <ListGroup>

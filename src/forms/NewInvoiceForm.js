@@ -2,19 +2,25 @@ import React from 'react'
 import { reduxForm, Field, Fields, FieldArray, change } from 'redux-form'
 import {Grid, Row, Form, FormGroup, FormControl, ControlLabel, Button} from 'react-bootstrap'
 import {Select} from 'components/common'
-import {getCustomers, getProducts, getInvoices} from 'redux/modules/Invoices'
+import {getCustomers, getProducts, getInvoices} from 'redux/modules/resources'
+import {createInvoiceAPISyncActionCreator} from 'redux/modules/InvoiceSync'
 import {connect} from 'react-redux'
 import * as u from 'utils'
 import * as fh from 'forms/formHelpers'
 import style from './NewInvoiceForm.styl'
 
 
+const createInvoice = createInvoiceAPISyncActionCreator({method: 'POST'})
+const updateInvoice = createInvoiceAPISyncActionCreator({method: 'PUT', id: 1})
+const removeInvoice = createInvoiceAPISyncActionCreator({method: 'DELETE', id: 1})
+
+
 function InvoiceTotal({total, discount}) {
   const discountedValue = total * discount / 100
   return <div>
     <hr />
-    <h2>Total: ${u.precisePrice(total - discountedValue)}</h2>
-    <h5>You just save ${u.precisePrice(discountedValue)}!</h5>
+    {<h2>Total: ${u.precisePrice(total - discountedValue)}</h2>}
+    <h5>You just save ${u.precisePrice(new Number(discountedValue))}!</h5>
     <hr />
   </div>
 }
@@ -29,7 +35,7 @@ export const FORM_ID = 'NewInvoice'
 export const fields = ['customer', 'products', 'quantities', 'discount', 'total']
 
 export const optionsRenderer = {
-  customers: ({id, name}) => ({value: id, label: name}),
+  customers: ({id, name}) => ({id, value: id, label: name}),
   products: ({id, name, price}) => ({value: id, label: `${name} $${price}`, price})
 }
 
@@ -62,18 +68,34 @@ type Props = {
   initialValues: {
     products: [],
     quantities: [],
-    discount: 0
+    discount: 0,
+    total: 0
   }
 })
 @connect(
-  ({form, resources: {customers, products}}) => ({customers, products, formData: form[FORM_ID]}),
-  {getCustomers, getProducts, change}
+  ({form, resources: {customers, products, invoices}}) => ({customers, products, invoices, formData: form[FORM_ID]}),
+  {getCustomers, getProducts, change, createInvoice, updateInvoice, removeInvoice}
 )
 export default class NewInvoice extends React.Component {
   props: Props;
   defaultProps = {
     fields: {},
   }
+  constructor(props) {
+    super(props);
+    const newInvoiceID = this.getNewInvoiceID()
+  }
+  componentDidMount () {
+    this.props.createInvoice()
+  }
+  componentDidUpdate () {
+    this.props.updateInvoice()
+  }
+  getNewInvoiceID() {
+    const lastInvoice = _.last(this.props.invoices)
+    return lastInvoice ? lastInvoice.id + 1 : 1
+  }
+
   getOptionsFromResource(resource, optionsRenderer) {
     return resource.loading
       ? []
@@ -91,17 +113,19 @@ export default class NewInvoice extends React.Component {
     const {formData: {values: {products, quantities}}} = this.props
     const productData = products[idx]
     const quantity = quantities[idx]
-    return <fh.CompleteField
-      id={String(productData.value)}
-      label={productData.label}
-      colConfig={fh.smallInputCfg}
-    >
-      <FormControl
-        type="number"
-        value={quantity}
-        onChange={this.handleQualityChange(quantities, idx)}
-      />
-    </fh.CompleteField>
+    return <div key={productData.value}>
+      <fh.CompleteField
+        id={String(productData.value)}
+        label={productData.label}
+        colConfig={fh.smallInputCfg}
+      >
+        <FormControl
+          type="number"
+          value={quantity}
+          onChange={this.handleQualityChange(quantities, idx)}
+        />
+      </fh.CompleteField>
+    </div>
   }
   DiscountInput = fh.createFieldComponent({
     type: 'number',

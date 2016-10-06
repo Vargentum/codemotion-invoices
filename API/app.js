@@ -56,6 +56,9 @@ Invoice = sequelize.define('invoices', {
   },
   total: {
     type: Sequelize.DECIMAL
+  },
+  isCreating: {
+    type: Sequelize.BOOLEAN
   }
 });
 
@@ -131,7 +134,8 @@ app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin");
   next();
 });
 
@@ -217,7 +221,7 @@ app.route('/api/invoices')
         })
     })
     .post(function(req, res) {
-        var invoice = Invoice.build(_.pick(req.body, ['customer_id', 'discount', 'total']));
+        var invoice = Invoice.build(_.pick(req.body, ['customer_id', 'discount', 'total', 'isCreating']));
         invoice.save().then(function(invoice){
             res.json(invoice);
         });
@@ -231,7 +235,7 @@ app.route('/api/invoices/:invoice_id')
     })
     .put(function(req, res) {
         Invoice.findById(req.params.invoice_id).then(function(invoice) {
-            invoice.update(_.pick(req.body, ['customer_id', 'discount', 'total'])).then(function(invoice) {
+            invoice.update(_.pick(req.body, ['customer_id', 'discount', 'total', 'isCreating'])).then(function(invoice) {
                 res.json(invoice);
             });
         });

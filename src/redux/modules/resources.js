@@ -1,8 +1,7 @@
 import createReducer from 'create-reducer-map'
 import update from 'react-addons-update'
 import * as u from 'utils'
-
-const API = 'http://localhost:8000/api/'
+import {API} from 'constants'
 
 const getProimseCycleActions = (actionType) => ({
   pending: actionType + '_PENDING',
