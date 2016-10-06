@@ -201,6 +201,17 @@ if (isUsingCSSModules) {
   })
 
   webpackConfig.module.loaders.push({
+    test: /\.styl$/,
+    include: cssModulesRegex,
+    loaders: [
+      'style',
+      cssModulesLoader,
+      'postcss',
+      'stylus?sourceMap'
+    ]
+  })
+
+  webpackConfig.module.loaders.push({
     test: /\.css$/,
     include: cssModulesRegex,
     loaders: [
@@ -224,6 +235,16 @@ webpackConfig.module.loaders.push({
   ]
 })
 webpackConfig.module.loaders.push({
+  test: /\.styl$/,
+  exclude: excludeCSSModules,
+  loaders: [
+    'style',
+    BASE_CSS_LOADER,
+    'postcss',
+    'stylus?sourceMap'
+  ]
+})
+webpackConfig.module.loaders.push({
   test: /\.css$/,
   exclude: excludeCSSModules,
   loaders: [
@@ -237,6 +258,9 @@ webpackConfig.module.loaders.push({
 // Style Configuration
 // ------------------------------------
 webpackConfig.sassLoader = {
+  includePaths: paths.client('styles')
+}
+webpackConfig.stylusLoader = {
   includePaths: paths.client('styles')
 }
 
