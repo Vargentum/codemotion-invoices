@@ -1,0 +1,20 @@
+clearfix()
+  &:before
+  &:after
+    content: ""
+    display: table
+  &:after
+    clear: both
+    
+
+
+.CompleteFieldLabel
+  position relative
+  top 7px
+  
+.FieldSparcer
+  &>*
+    clearfix()
+    & + &
+      margin-top: 15px
+    
