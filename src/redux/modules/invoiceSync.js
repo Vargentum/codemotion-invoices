@@ -12,8 +12,16 @@ import {FORM_ID} from 'forms/NewInvoiceForm'
 
 // decorator => thunk
 
-export const createInvoiceAPISyncActionCreator = ({method, id, isCreating}) => 
-  () => (dispatch, getState) => {
+const composeInvoiceApiUrl = ({method, id}) => {
+  switch (method) {
+    case "POST": return `${API}invoices`
+    case "PUT": return `${API}invoices/${id}`
+  }
+}
+
+export const createInvoiceAPISyncActionCreator = ({method, isCreating}) => 
+  ({id}) => (dispatch, getState) => {
+    const URL = composeInvoiceApiUrl({method, id})
     const {form: {[FORM_ID]: {values: {discount, total, customer}}}} = getState()
     const headers = new Headers()
     headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
@@ -32,7 +40,7 @@ export const createInvoiceAPISyncActionCreator = ({method, id, isCreating}) =>
         isCreating
       })
     }
-    fetch(`${API}invoices${id ? '/'+id : ''}`, options).then(
+    fetch(URL, options).then(
       (success) => { console.log(success, 'success---------') /*TODO: Dispatch*/},
       (error) => { console.log(error, 'error---------') }
     )

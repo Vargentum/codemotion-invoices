@@ -2,14 +2,14 @@ import React from 'react'
 import {Button, Panel} from 'react-bootstrap'
 import {ItemsList} from 'components/common'
 
-function InvoiceListItem ({id, customer_id, discount, total}) {
+function InvoiceListItem ({id, customer, discount, total}) {
   return <Panel 
     bsStyle='info'
     header={`Invoice ${id}`} 
     footer={`Total price is $${total}`} 
     >
-    <p>Customer </p>{/*TODO: Get Customer?*/}
-    <Button bsStyle="success" disabled={true}>Discount is {discount}</Button>
+    <p>Customer: {customer && customer.name}</p> {/*TODO: Add loading!*/}
+    <p>Discount is {discount}%</p>
   </Panel>
 }
 

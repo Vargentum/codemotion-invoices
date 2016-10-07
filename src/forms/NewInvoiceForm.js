@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import { reduxForm, Field, Fields, FieldArray, change } from 'redux-form'
 import {Grid, Row, Form, FormGroup, FormControl, ControlLabel, Button} from 'react-bootstrap'
 import {Select} from 'components/common'
@@ -11,8 +12,8 @@ import style from './NewInvoiceForm.styl'
 
 
 const createInvoice = createInvoiceAPISyncActionCreator({method: 'POST'})
-const updateInvoice = createInvoiceAPISyncActionCreator({method: 'PUT', id: 1})
-const removeInvoice = createInvoiceAPISyncActionCreator({method: 'DELETE', id: 1})
+const updateInvoice = createInvoiceAPISyncActionCreator({method: 'PUT'})
+const removeInvoice = createInvoiceAPISyncActionCreator({method: 'DELETE'})
 
 
 function InvoiceTotal({total, discount}) {
@@ -47,7 +48,7 @@ const validate = ({customer, products, quantities, discount}) => {
   if (!products.length) {
     errors.products = 'Please, add at least one Product'
   } 
-  if (!discount) {
+  if (_.isUndefined(discount)) {
     errors.discount = `Should be set. Provide 0 if you don't want to pay more :)`
   } 
   if (discount < discountLimit.min || discount > discountLimit.max) {
@@ -86,13 +87,13 @@ export default class NewInvoice extends React.Component {
     const newInvoiceID = this.getNewInvoiceID()
   }
   componentDidMount () {
-    this.props.createInvoice()
+    this.props.createInvoice({id: this.getNewInvoiceID()})
   }
   componentDidUpdate () {
-    this.props.updateInvoice()
+    this.props.updateInvoice({id: this.getNewInvoiceID()})
   }
   getNewInvoiceID() {
-    const lastInvoice = _.last(this.props.invoices)
+    const lastInvoice = _.last(this.props.invoices.data)
     return lastInvoice ? lastInvoice.id + 1 : 1
   }
 
@@ -173,7 +174,6 @@ export default class NewInvoice extends React.Component {
                 total={formData.values.total} 
                 discount={formData.values.discount} />
             }
-            <Button type="submit" bsStyle="primary">Create new Invoice</Button>
           </Row>
         </Grid>
       </Form>
