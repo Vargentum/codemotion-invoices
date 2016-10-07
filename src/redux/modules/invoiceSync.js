@@ -16,6 +16,7 @@ const composeInvoiceApiUrl = ({method, id}) => {
   switch (method) {
     case "POST": return `${API}invoices`
     case "PUT": return `${API}invoices/${id}`
+    case "DELETE": return `${API}invoices/${id}`
   }
 }
 

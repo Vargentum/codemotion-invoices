@@ -80,19 +80,29 @@ export default class NewInvoice extends React.Component {
   defaultProps = {
     fields: {},
   }
+  state = {
+    created: false
+  }
   constructor(props) {
     super(props);
     const newInvoiceID = this.getNewInvoiceID()
   }
-  componentDidMount () {
-    this.props.createInvoice({id: this.getNewInvoiceID()})
-  }
   componentDidUpdate () {
-    this.props.updateInvoice({id: this.getNewInvoiceID()})
+    if (this.props.valid) {
+      if (!this.state.created) {
+        this.createInvoice()      
+      } else {
+        this.props.updateInvoice({id: this.getNewInvoiceID()})
+      }
+    }
   }
   getNewInvoiceID() {
     const lastInvoice = _.last(this.props.invoices.data)
     return lastInvoice ? lastInvoice.id + 1 : 1
+  }
+  createInvoice() {
+    this.props.createInvoice({id: this.getNewInvoiceID()})
+    this.setState({created: true});
   }
 
   getOptionsFromResource(resource, optionsRenderer) {
