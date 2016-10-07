@@ -10,18 +10,16 @@ import * as u from 'utils'
 import * as fh from 'forms/formHelpers'
 import style from './NewInvoiceForm.styl'
 
-
 const createInvoice = createInvoiceAPISyncActionCreator({method: 'POST'})
 const updateInvoice = createInvoiceAPISyncActionCreator({method: 'PUT'})
 const removeInvoice = createInvoiceAPISyncActionCreator({method: 'DELETE'})
-
 
 function InvoiceTotal({total, discount}) {
   const discountedValue = total * discount / 100
   return <div>
     <hr />
-    {<h2>Total: ${u.precisePrice(total - discountedValue)}</h2>}
-    <h5>You just save ${u.precisePrice(new Number(discountedValue))}!</h5>
+    {<h2>Total: ${u.precisePrice(total)}</h2>}
+    <h5>You just save ${u.precisePrice(discountedValue)}!</h5>
     <hr />
   </div>
 }
