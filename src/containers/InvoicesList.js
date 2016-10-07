@@ -70,15 +70,15 @@ export default class InvoicesList extends React.Component {
       return (
         <div>
           <h1>Invoices List</h1>
+          <p><Button
+            onClick={::this.showInvoiceCreateForm}
+            bsStyle="primary">Add new Invoice</Button></p>
           <InvoicesListUI data={fullInvoicesData} />
           {!fullInvoicesData.length &&
             <cmn.EmptyArea>
               There are no invoices. Would you like to add a new one?
             </cmn.EmptyArea>
           }
-          <Button
-            onClick={::this.showInvoiceCreateForm}
-            bsStyle="primary">Add new Invoice</Button>
           {this.r_invoiceCreateFormModal()}
         </div>
       )

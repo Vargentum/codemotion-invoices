@@ -1,11 +1,16 @@
-import React from 'react'
+'use strict'
+import React, { Component, PropTypes as PT } from 'react'
+import _ from 'lodash'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
 type Props = {
 
 }
-export class <%= pascalEntityName %> extends React.Component {
+@connect(
+  ({statePart}) => ({ statePart }),
+  {}
+)
+export default class <%= pascalEntityName %> extends React.Component {
   props: Props;
 
   render() {
@@ -14,15 +19,3 @@ export class <%= pascalEntityName %> extends React.Component {
     )
   }
 }
-
-const mapStateToProps = (state) => {
-  return {}
-}
-const mapDispatchToProps = (dispatch) => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(<%= pascalEntityName %>)

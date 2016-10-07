@@ -1,9 +1,13 @@
-import React from 'react'
+'use strict'
+import React, { Component, PropTypes as PT } from 'react'
+import _ from 'lodash'
+import { connect } from 'react-redux'
+
 
 type Props = {
 
 };
-export class <%= pascalEntityName %> extends React.Component {
+export default class <%= pascalEntityName %> extends React.Component {
   props: Props;
 
   render () {
@@ -12,6 +16,3 @@ export class <%= pascalEntityName %> extends React.Component {
     )
   }
 }
-
-export default <%= pascalEntityName %>
-

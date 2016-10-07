@@ -14,7 +14,7 @@ export default {
   [FORM_ID]: function (state, {type, payload, meta}) {
     if (type === 'redux-form/CHANGE') {
       if (meta.field === 'products') {
-        const synchedQuantities = payload.map((product, idx) => state.values.quantities[idx] || 1)
+        const synchedQuantities = payload.map((product, idx) => state.values.quantities[idx] || 0)
         return update(state, {values: {quantities: {$set: synchedQuantities}}})
       }
       if (meta.field === 'products' || meta.field === 'quantities' || meta.field === 'discount') {
