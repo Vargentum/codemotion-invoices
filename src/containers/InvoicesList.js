@@ -57,7 +57,7 @@ export default class InvoicesList extends React.Component {
   getFullInvoicesData() {
     return this.props.invoices.data.map(invoice => ({
       ...invoice,
-      customer: this.props.customers.data.find(({id}) => id === invoice.id) // TODO: Make it faster wit Maps
+      customer: this.props.customers.data.find(({id}) => id === invoice.customer_id) // TODO: Make it faster wit Maps
     }))    
   }
   render() {
@@ -67,8 +67,6 @@ export default class InvoicesList extends React.Component {
       return <cmn.LoadingArea />
     } else {
       const fullInvoicesData = this.getFullInvoicesData()
-      console.log(fullInvoicesData, 'fullInvoicesData---------')
-      console.log(this.props.customers, 'this.props.customers---------')
       return (
         <div>
           <h1>Invoices List</h1>
